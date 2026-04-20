@@ -53,16 +53,14 @@ RUN set -eux; \
     make install; \
     rm -rf "/tmp/qemu-${QEMU_VERSION}" /tmp/qemu.tar.xz
 
+COPY aarch64-linux-musl-cross.tgz /tmp/aarch64-linux-musl-cross.tgz
+COPY loongarch64-linux-musl-cross.tgz /tmp/loongarch64-linux-musl-cross.tgz
+COPY riscv64-linux-musl-cross.tgz /tmp/riscv64-linux-musl-cross.tgz
+COPY x86_64-linux-musl-cross.tgz /tmp/x86_64-linux-musl-cross.tgz
+
 RUN set -eux; \
     for arch in aarch64 riscv64 x86_64 loongarch64; do \
       file="${arch}-linux-musl-cross.tgz"; \
-      if ! wget -q "https://github.com/arceos-org/setup-musl/releases/download/prebuilt/${file}" -O "/tmp/${file}"; then \
-        if [ "${arch}" = "loongarch64" ]; then \
-          wget -q "https://github.com/LoongsonLab/oscomp-toolchains-for-oskernel/releases/download/loongarch64-linux-musl-cross-gcc-13.2.0/${file}" -O "/tmp/${file}"; \
-        else \
-          wget -q "https://musl.cc/${file}" -O "/tmp/${file}"; \
-        fi; \
-      fi; \
       tar -xzf "/tmp/${file}" -C /opt; \
       rm -f "/tmp/${file}"; \
     done
